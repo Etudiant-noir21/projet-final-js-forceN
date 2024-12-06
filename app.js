@@ -8,27 +8,33 @@ const btn_ajout = document.getElementById('btn_ajout')
 let tasks = []
 
 // ecoutons la soumission
-form_ajout.addEventListener('click',(event)=>{
+btn_ajout.addEventListener('click',function(event){
 
     if(inputAjout.value === '') return
         event.preventDefault()
         const task = inputAjout.value
         tasks.push(task)
-        console.log(task);
+        // console.log(task)
         
-        createElement(task)
+        createElements(task)
+
     inputAjout.value = ''
 
 })
 
 // fonction d'ajout d'element
 
-function createElement(task){
-const listTask = document.getElementById('listTask')
+function createElements(task){
+    const listTask = document.getElementById('listTask'); // Récupérer l'élément <ul> de la page
 
-const li = document.createElement('li')
-li.classList.add('list-group-item')
-listTask.appendChild(li)
+    const li = document.createElement('li');  // Créer un nouvel élément <li>
+    li.classList.add('list-group-item');       // Ajouter la classe CSS pour la mise en forme
+
+    li.textContent = task;                    // Ajouter le contenu de la tâche
+console.log(task);
+    listTask.appendChild(li);                 // Ajouter le nouvel élément <li> à la liste
+
+    console.log('Tâche ajoutée :', li); 
 
 // cache a cocher
 const cache = document.createElement('input')
@@ -40,7 +46,7 @@ li.appendChild(cache)
 const span = document.createElement('span')
 span.textContent= task
 li.appendChild(span)
-console.log(li);
+// console.log(li);
 
 
 // button suprimer
@@ -71,4 +77,17 @@ function supprimerTache(taskSupp){
         listTask.children[index].remove()
 
     }
+}
+
+// local storage
+
+function saveDonner(){
+    let save = JSON.parse(localStorage.getItem('taches'))||[]
+    
+    if(!Array.isArray(save)){
+         save=[]
+    }
+    save.push(tasks)
+
+    localStorage.setItem('taches',JSON.stringify(save))
 }
