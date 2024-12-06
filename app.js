@@ -8,7 +8,7 @@ const btn_ajout = document.getElementById('btn_ajout')
 let tasks = []
 
 // ecoutons la soumission
-btn_ajout.addEventListener('click',(event)=>{
+form_ajout.addEventListener('click',(event)=>{
 
     if(inputAjout.value === '') return
         event.preventDefault()
