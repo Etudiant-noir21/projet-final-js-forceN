@@ -12,17 +12,31 @@ body{
     background-color: #132529;
 }
 
-.list-group-item{
-    background-color: #22383d;
-    color: #fff;
-    border: none;
-    margin-top: 5px;
-}
+
 .container{
     width: 80%;
     max-width: 800px;
 }
 
-.update{
+.misAjour{
     display: none
+}
+
+table {
+    border: 1px solid;
+    width: 100%;
+}
+
+thead{
+ border: 1px solid #fff;
+}
+
+tr{
+    border: 1px solid #fff;
+}
+
+th, td{
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 10px;
 }

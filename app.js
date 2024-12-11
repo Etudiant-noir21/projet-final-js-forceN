@@ -1,93 +1,169 @@
-// form ajouter tache
-const form_ajout = document.getElementById('myForm_ajout')
-const inputAjout = document.getElementById('InputTask')
-const btn_ajout = document.getElementById('btn_ajout')
+const taskInput = document.getElementById('taskInput');
+const addTaskBtn = document.getElementById('addTaskBtn');
+const taskList = document.getElementById('taskList')
+console.log(taskList);
 
-// table pour enregistrer les taches 
+// modifier
+
+const modifyInput = document.getElementById('modifyInput')
+const modifyBtn = document.getElementById('modifyBtn')
+console.log(modifyBtn);
+
 
 let tasks = []
+window.onload = ()=>{
+    getTask()
+}
+addTaskBtn.addEventListener('click',(event)=>{
+    if(taskInput.value==='') return
 
-// ecoutons la soumission
-btn_ajout.addEventListener('click',function(event){
+    const task = taskInput.value.trim()
+    tasks.push(task)
+    console.log(tasks)
+    event.preventDefault()
+    createElement(task)
+    saveTask(task)
 
-    if(inputAjout.value === '') return
-        event.preventDefault()
-        const task = inputAjout.value
-        tasks.push(task)
-        // console.log(task)
-        
-        createElements(task)
-
-    inputAjout.value = ''
-
+taskInput.value = ''
 })
 
-// fonction d'ajout d'element
+function createElement(task){
+    const tr = document.createElement('tr')
+    console.log(tr);
+    
+const td1 = document.createElement('td')
+const td2 = document.createElement('td')
+const td3 = document.createElement('td')
+taskList.appendChild(tr)
 
-function createElements(task){
-    const listTask = document.getElementById('listTask'); // Récupérer l'élément <ul> de la page
-
-    const li = document.createElement('li');  // Créer un nouvel élément <li>
-    li.classList.add('list-group-item');       // Ajouter la classe CSS pour la mise en forme
-
-    li.textContent = task;                    // Ajouter le contenu de la tâche
-console.log(task);
-    listTask.appendChild(li);                 // Ajouter le nouvel élément <li> à la liste
-
-    console.log('Tâche ajoutée :', li); 
-
-// cache a cocher
+tr.appendChild(td1)
+tr.appendChild(td2)
+tr.appendChild(td3)
 const cache = document.createElement('input')
 cache.type = 'checkbox'
-cache.classList.add('me-1')
-li.appendChild(cache)
-
-// span pour contenir les taches
-const span = document.createElement('span')
-span.textContent= task
-li.appendChild(span)
-// console.log(li);
+td1.appendChild(cache)
 
 
-// button suprimer
-const btnSupp = document.createElement('button')
-btnSupp.textContent = 'supprimer'
-btnSupp.classList.add('btn','btn-danger','text-white')
-li.appendChild(btnSupp)
+td2.textContent = task
 
-btnSupp.onclick =()=>{
-supprimerTache(task)
+
+// creation button modifier
+const btnModif = document.createElement('button')
+btnModif.textContent = 'update'
+btnModif.classList.add('btn','btn-warning','text-white')
+td3.appendChild(btnModif)
+
+// button modifier
+
+btnModif.onclick = ()=>{
+    modifyInput.value = task
+    const misAjour = document.querySelector('.misAjour')
+    misAjour.style.display = 'flex'
+    
+    const Ajouter  = document.querySelector('.Ajouter')
+    Ajouter.style.display = 'none'
+    // modifierTache(task)
 }
 
+// button supprimer
+const btnsupp = document.createElement('button')
+btnsupp.textContent= 'Supp'
+btnsupp.classList.add('btn','btn-danger', 'text-white')
+td3.appendChild(btnsupp)
+td3.classList.add('d-flex','justify-content-between','align-items-center')
 
+btnsupp.addEventListener('click',()=>{
+    supprimerTache(task)
+})
+
+
+// gerer l'etat de la tache
+cache.addEventListener('change',()=>{
+    gererEtat(cache,td2)
+})
 }
+
 
 // fonction supprimer
 
-function supprimerTache(taskSupp){
-    const listTask = document.getElementById('listTask')
-    const index = tasks.indexOf(taskSupp)
-
-    // verifions si la tache existe dans le tableau
-    if(index !== -1){
-        // supprimer la tache du tableau de cette index
-        tasks.splice(index,1)
-        
-        // supprimons l'element li dans correspondant
-        listTask.children[index].remove()
-
+function supprimerTache(taskDelete){
+    let save = JSON.parse(localStorage.getItem('taches'))||[]
+    if(!Array.isArray(save)){
+        save = []
     }
+    const index = save.indexOf(taskDelete)
+    save.splice(index,1)
+    localStorage.setItem('taches',JSON.stringify(save))
+    location.reload()
+
+   
 }
 
-// local storage
-
-function saveDonner(){
+// fonction pour gerer l'etat de la tache
+function gererEtat(cache,td2,id){
     let save = JSON.parse(localStorage.getItem('taches'))||[]
-    
     if(!Array.isArray(save)){
-         save=[]
+        save = []
     }
-    save.push(tasks)
-
+    if(cache.checked){
+        td2.style.textDecoration = 'line-through'
+        td2.style.color = 'red'
+        cache.checked = false
+        save.splice(id,1)
+    }else{
+        td2.style.textDecoration = 'none'
+        td2.style.color = 'white'
+    }
+    
     localStorage.setItem('taches',JSON.stringify(save))
+}
+// ecoutons la soumission de update
+modifyBtn.addEventListener('click',()=>{
+
+    const misAjour = document.querySelector('.misAjour')
+    misAjour.style.display = 'none'
+    
+    const Ajouter  = document.querySelector('.Ajouter')
+    Ajouter.style.display = 'flex'
+    modifierTache(modifyInput.value)
+
+    // vider le champs
+    modifyInput.value = ''
+})
+// fonction modifier
+
+function modifierTache(taskModif){
+    let save = JSON.parse(localStorage.getItem('taches'))||[]
+    if(!Array.isArray(save)){
+        save = []
+    }
+  
+    
+    const index = save.indexOf(taskModif)
+    save.splice(index,1,modifyInput.value)
+    localStorage.setItem('taches',JSON.stringify(save))
+    location.reload()
+}
+
+
+
+function saveTask(task){
+let save = JSON.parse(localStorage.getItem('taches'))||[]
+if(!Array.isArray(save)){
+    save = []
+}
+save.push(task)
+localStorage.setItem('taches',JSON.stringify(save))
+}
+
+// recuperation dans le localStorage
+
+function getTask(){
+    let save = JSON.parse(localStorage.getItem('taches'))||[]
+    if(!Array.isArray(save)){
+        save = []
+    }
+  save.forEach(element => {
+    createElement(element)
+  });
 }
